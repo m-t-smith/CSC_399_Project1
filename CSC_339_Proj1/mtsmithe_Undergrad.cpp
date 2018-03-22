@@ -9,9 +9,16 @@ This program defines a parent class: Student, and three subclasses: Undergrad, G
 implements STL and i/o functions to write to files, and defines a sort function (overloading "<" operator)
 */
 
-#include<iostream>
-#include<string.h>
-#include<stdio.h>
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+
 using namespace std;
 
 class Student {
@@ -38,7 +45,7 @@ class Student {
 
 		virtual void print() {
 			
-			cout << name << "	" << ssn << "	 " << gpa << "	 " << credits;
+			cout << "	" << name << "	" << ssn << "	 " << gpa << "	 " << credits;
 		}
 		virtual float tuition() = 0;
 
@@ -51,8 +58,8 @@ class Student {
 		}
 		void display_Head() {
 			cout << "Name:	" << "SSN:		" << "GPA:	" << "Credits:   "
-				<< "Year/Title:	" << "	Tuition:	" << "Thesis:		"
-				<< "Hourly Pay:	" << "Supervisor:" << "Task:" << endl;
+				<< "Year/Title:	" << "	Tuition:  " << "Thesis:			  	  "
+				<< "  Hourly Pay:	  " << "Supervisor:   " << "Task:" << endl;
 		}
 
 };
@@ -83,19 +90,20 @@ class Mtsmithe_Undergrad : public Student {
 
 
 		float tuition() {
-			return undergrad_rate;
+			float tuition = undergrad_rate * credits;
+			return tuition;
 		};
 		void print() {
 			cout << endl;
 			Student::print();
-			cout << "       " << *year << "		" << undergrad_rate;
+			cout << "       " << *year << "		$" << tuition();
 		}
 
 };
 
 class Grad : public Student {
 	protected:
-		float grad_rate;
+		float grad_rate = 500.0;
 		char thesisArray[70];
 		char (*thesis)[70] = &thesisArray;
 		char *thesisPtr;
@@ -117,8 +125,8 @@ class Grad : public Student {
 		}
 
 		float tuition() {
-			this->grad_rate = 500;
-			return grad_rate;
+			float tuition = grad_rate * credits;
+			return tuition;
 		}
 		char * get_thesis() {
 			return thesisPtr;
@@ -129,7 +137,7 @@ class Grad : public Student {
 		void print() {
 			cout << endl;
 			Student::print();
-			cout << "	  graduate " << *title << "	" << grad_rate << "		 " << *thesis;
+			cout << "	  graduate " << *title << "	$" << tuition() << "      " << *thesis;
 		}
 
 };
@@ -179,25 +187,103 @@ class GradAsst : public Grad {
 
 		void print() {
 			Grad::print();
-			cout << "	"<<  hourPay << "   " << supervisor << "   " << task << endl;
+			cout << "                $"<<  hourPay << "          " << supervisor << "       " << task << endl;
 		}
 };
 
-
-//main function executes program
-int main() {
+class utilityPack {
 
 
-	Mtsmithe_Undergrad student("Mary", "000111222", 4.0, 12, "Junior");
-	student.display_Head();
-	student.print();
+public:
+	utilityPack(int i) {};
+
+	void tell(char b, char f, string in) {
+		string call;
+		switch (b) {
+			case 's':
+				call = "static";
+				break;
+
+			case 'd':
+				call = "dynamic";
+				break;
+			}
+
+			if (f == 'p') {
+				cout << " \n " << call << " call of print() in " << in << ":";
+			}
+			else if (f == 't') {
+				cout << "\n " << call << " call of tuition() in " << in << ": $";
+			}
+	}
+	vector<string> get_tokens(string in) {
+		istringstream iss(in);
+		vector<string> tokens{ istream_iterator<string>{iss}, istream_iterator<string>{} };
+		return tokens;
+	}
+
+
 	
-	Grad gStudent("David", "111222333", 3.7, 9, "How to learn data structures using C++/STL", "student");
-	gStudent.print();
+};
 
-	GradAsst gradAss("Jason", "222333444", 3.7, 9, "Design of efficient algorithms", 20.0, "Dr. Fu", "Grading 330 projects and implementing a data mining algorithm", "assistant");
-	gradAss.print();
 
-	return 0;
-}
+
+	//main function executes program
+	int main() {
+
+		utilityPack util(1);
+		Mtsmithe_Undergrad student("Mary", "000111222", 4.0, 12, "Junior"), *ugradPtr;
+
+		ugradPtr = &student;
+
+		//student.display_Head();
+		util.tell('s', 'p', "_undergrad");
+		student.print();
+		util.tell('s', 't', "_undergrad");
+		cout  << student.tuition() << endl;
+		util.tell('d', 'p', "_undergrad");
+		ugradPtr->print();
+		util.tell('d', 't', "_undergrad");
+		cout << ugradPtr->tuition() << endl;
+
+		Grad gStudent("David", "111222333", 3.7, 9, "How to learn data structures using C++/STL", "student"), *gradPtr;
+		
+		gradPtr = &gStudent;
+		
+		util.tell('s', 'p', "Grad");
+		gStudent.print();
+		util.tell('s', 't', "Grad");
+		cout << gStudent.tuition() << endl;
+		util.tell('d', 'p', "Grad");
+		gradPtr->print();
+		util.tell('d', 't', "Grad");
+		cout << gradPtr->tuition() << endl;
+
+		GradAsst gradAss("Jason", "222333444", 3.9, 9, "Design of efficient algorithms", 20.0, "Dr. Fu",
+			"Grading 330 projects and implementing a data mining algorithm", "assistant"), *gradAssPtr;
+		
+		gradAssPtr = &gradAss;
+
+		util.tell('s', 'p', "GradAsst");
+		gradAss.print();
+		util.tell('s', 't', "GradAsst");
+		cout << gradAss.tuition() << endl;
+		util.tell('d', 'p', "GradAsst");
+		gradAssPtr->print();
+		util.tell('d', 't', "GradAsst");
+		cout<< gradAssPtr->tuition() << endl;
+
+		ifstream file("student");
+		string line;
+		
+		while (getline(file, line)) {
+			vector <string> e = util.get_tokens(line);
+			//char * elPtr = &e[0];
+			//Mtsmithe_Undergrad student(elPtr, e[1], e[2], e[3], e[4]);
+		}
+
+		return 0;
+	}
+
+
 
