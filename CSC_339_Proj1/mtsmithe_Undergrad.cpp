@@ -275,9 +275,12 @@ public:
 
 		ifstream file("student");
 		string line;
-		
+		vector<Mtsmithe_Undergrad*> students;
 		while (getline(file, line)) {
-			vector <string> e = util.get_tokens(line);
+			/*vector <string> e = util.get_tokens(line);
+			const char n[21] = e[0];
+			students.push_back(new Mtsmithe_Undergrad());
+			*/
 			//char * elPtr = &e[0];
 			//Mtsmithe_Undergrad student(elPtr, e[1], e[2], e[3], e[4]);
 		}
