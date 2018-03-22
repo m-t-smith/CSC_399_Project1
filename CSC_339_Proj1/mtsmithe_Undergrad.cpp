@@ -18,6 +18,8 @@ implements STL and i/o functions to write to files, and defines a sort function 
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <stdlib.h>
+#include <list>
 
 using namespace std;
 
@@ -45,7 +47,7 @@ class Student {
 
 		virtual void print() {
 			
-			cout << "	" << name << "	" << ssn << "	 " << gpa << "	 " << credits;
+			cout << "Name: " << name << " SSN: " << ssn << " Credits: " << credits << " GPA: " << gpa;
 		}
 		virtual float tuition() = 0;
 
@@ -57,9 +59,20 @@ class Student {
 			this-> credits = credits;
 		}
 		void display_Head() {
-			cout << "Name:	" << "SSN:		" << "GPA:	" << "Credits:   "
-				<< "Year/Title:	" << "	Tuition:  " << "Thesis:			  	  "
-				<< "  Hourly Pay:	  " << "Supervisor:   " << "Task:" << endl;
+			cout << "Name:	             " << "SSN:     " << "Year     " << "Credits: "
+				 << "Tuition: " << "GPA:     "  << endl;
+		}
+		string get_name() {
+			return name;
+		}
+		string get_ssn() {
+			return ssn;
+		}
+		int get_cred() {
+			return credits;
+		}
+		float get_gpa() {
+			return gpa;
 		}
 
 };
@@ -70,13 +83,14 @@ class Mtsmithe_Undergrad : public Student {
 		float undergrad_rate = 380.0;
 		char yearArray[10];
 		char (*year)[10] = &yearArray;
+		float * mytuition;
 		
 
 	public:
 		Mtsmithe_Undergrad(const char name[21], const char ssn[10],
 			float gpa, int credits, char parYear[]) : Student(name, ssn, gpa, credits) {
 			tuition();
-			strcpy_s(*year, sizeof yearArray, parYear);
+			strcpy_s(*year, parYear);
 
 		};
 
@@ -90,14 +104,18 @@ class Mtsmithe_Undergrad : public Student {
 
 
 		float tuition() {
-			float tuition = undergrad_rate * credits;
-			return tuition;
+			*mytuition = undergrad_rate * credits;
+			return *mytuition;
 		};
 		void print() {
 			cout << endl;
 			Student::print();
-			cout << "       " << *year << "		$" << tuition();
+			cout << " Year: " << *year << " Tuition: $" << tuition();
 		}
+		float get_tuition() {
+			return *mytuition;
+		}
+		
 
 };
 
@@ -137,8 +155,9 @@ class Grad : public Student {
 		void print() {
 			cout << endl;
 			Student::print();
-			cout << "	  graduate " << *title << "	$" << tuition() << "      " << *thesis;
+			cout << " Title: graduate " << *title << " Tutition: $" << tuition() << " Thesis: " << *thesis;
 		}
+		
 
 };
 
@@ -187,7 +206,7 @@ class GradAsst : public Grad {
 
 		void print() {
 			Grad::print();
-			cout << "                $"<<  hourPay << "          " << supervisor << "       " << task << endl;
+			cout << " Pay: $"<<  hourPay << " Supervisor: " << supervisor << " Task: " << task << endl;
 		}
 };
 
@@ -236,7 +255,7 @@ public:
 
 		ugradPtr = &student;
 
-		//student.display_Head();
+		
 		util.tell('s', 'p', "_undergrad");
 		student.print();
 		util.tell('s', 't', "_undergrad");
@@ -273,17 +292,41 @@ public:
 		util.tell('d', 't', "GradAsst");
 		cout<< gradAssPtr->tuition() << endl;
 
-		ifstream file("student");
+		ifstream file("student.txt");
 		string line;
+		list<Mtsmithe_Undergrad> student_list;
 		vector<Mtsmithe_Undergrad*> students;
+
 		while (getline(file, line)) {
-			/*vector <string> e = util.get_tokens(line);
-			const char n[21] = e[0];
-			students.push_back(new Mtsmithe_Undergrad());
-			*/
-			//char * elPtr = &e[0];
-			//Mtsmithe_Undergrad student(elPtr, e[1], e[2], e[3], e[4]);
+			vector <string> e = util.get_tokens(line);
+			char name[21];
+			char ssn[10];
+			char year[10];
+			float cred;
+			int gpa;
+
+			strcpy_s(name, e[0].c_str());
+			strcpy_s(ssn, e[1].c_str());
+			strcpy_s(year, e[2].c_str());
+			cred = atof(e[3].c_str());
+			gpa = atoi(e[4].c_str());
+
+			student_list.push_back(Mtsmithe_Undergrad(name, ssn, gpa, cred, year));
 		}
+
+		student_list.push_front(student_list.back());
+		student_list.pop_back();
+
+		cout << endl << endl;
+		list <Mtsmithe_Undergrad> ::iterator it;
+		
+		student.display_Head();
+		/*for (auto it = student_list.begin(); it != student_list.end(); it++ ) {
+			cout << it->get_name() << "  " << it->get_ssn() << "  " << it->get_year() << "  "
+				<< it->get_cred() << "  " << it->get_tuition() << endl;
+		}*/
+		
+		
 
 		return 0;
 	}
