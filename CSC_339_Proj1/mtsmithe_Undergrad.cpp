@@ -20,6 +20,7 @@ implements STL and i/o functions to write to files, and defines a sort function 
 #include <iterator>
 #include <stdlib.h>
 #include <list>
+#include <iomanip>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ class Student {
 		}
 		virtual float tuition() = 0;
 
-		void set_GPA(int gpa) {
+		void set_GPA(float gpa) {
 			this-> gpa = gpa;
 		}
 
@@ -59,8 +60,13 @@ class Student {
 			this-> credits = credits;
 		}
 		void display_Head() {
-			cout << "Name:	             " << "SSN:     " << "Year     " << "Credits: "
-				 << "Tuition: " << "GPA:     "  << endl;
+			std::cout.width(20); cout << std::left << "Name:";
+			cout << std::setw(10) << std::left << "SSN:";
+			cout << std::setw(10) << std::left << "Year:";
+			cout << std::setw(10) << std::left << "Credits:";
+			cout << std::setw(10) << std::right << "Tuition:";
+			cout << std::setw(10) << std::right << " GPA:";
+			cout << endl;
 		}
 		string get_name() {
 			return name;
@@ -83,7 +89,7 @@ class Mtsmithe_Undergrad : public Student {
 		float undergrad_rate = 380.0;
 		char yearArray[10];
 		char (*year)[10] = &yearArray;
-		float * mytuition;
+		
 		
 
 	public:
@@ -102,19 +108,19 @@ class Mtsmithe_Undergrad : public Student {
 			return undergrad_rate;
 		}
 
-
 		float tuition() {
-			*mytuition = undergrad_rate * credits;
-			return *mytuition;
-		};
+			float tuition = undergrad_rate * credits;
+			return tuition;
+		}
+
 		void print() {
 			cout << endl;
 			Student::print();
 			cout << " Year: " << *year << " Tuition: $" << tuition();
 		}
-		float get_tuition() {
-			return *mytuition;
-		}
+		/*float get_tuition() {
+			return tuition;
+		}*/
 		
 
 };
@@ -302,14 +308,14 @@ public:
 			char name[21];
 			char ssn[10];
 			char year[10];
-			float cred;
-			int gpa;
+			int cred;
+			float gpa;
 
 			strcpy_s(name, e[0].c_str());
 			strcpy_s(ssn, e[1].c_str());
 			strcpy_s(year, e[2].c_str());
-			cred = atof(e[3].c_str());
-			gpa = atoi(e[4].c_str());
+			cred = atoi(e[3].c_str());
+			gpa = atof(e[4].c_str());
 
 			student_list.push_back(Mtsmithe_Undergrad(name, ssn, gpa, cred, year));
 		}
@@ -321,10 +327,15 @@ public:
 		list <Mtsmithe_Undergrad> ::iterator it;
 		
 		student.display_Head();
-		/*for (auto it = student_list.begin(); it != student_list.end(); it++ ) {
-			cout << it->get_name() << "  " << it->get_ssn() << "  " << it->get_year() << "  "
-				<< it->get_cred() << "  " << it->get_tuition() << endl;
-		}*/
+		for (auto it = student_list.begin(); it != student_list.end(); it++ ) {
+			std::cout.width(20); cout << std::left << it->get_name();
+			std::cout.width(10); cout << std::left << it->get_ssn();
+			cout << std::setw(10) << left << it->get_year(); 
+			cout << std::setw(10) << left << it->get_cred();
+			cout << std::setw(10) << setfill('$') << right << it->tuition();
+			std::cout.fill(' '); cout << setw(10) << right << setprecision(2) << it->get_gpa() 
+				<< setprecision(0) <<endl;
+		}
 		
 		
 
