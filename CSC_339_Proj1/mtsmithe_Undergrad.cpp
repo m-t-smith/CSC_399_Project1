@@ -1,12 +1,13 @@
 /*
 Matt Smitherman
-CSC 339 Project 1
+CSC 339-01 
+Project 1
 3/15/2018
 
-ctrl k c --comment, ctrl k q --uncomment
-
 This program defines a parent class: Student, and three subclasses: Undergrad, Grad, and GradAsst;
-implements STL and i/o functions to write to files, and defines a sort function (overloading "<" operator)
+implements various i/o functions to read from files, store data in list and vector data-structures,
+print to console, and implements STL sort function (overloading "<" operator)
+
 */
 
 #include <iostream>
@@ -48,7 +49,7 @@ class Student {
 
 		virtual void print() {
 			
-			cout << "Name: " << name << " SSN: " << ssn << " Credits: " << credits << " GPA: " << gpa;
+			cout << endl << " Name: " << name << endl << " SSN: " << ssn  << endl << " Credits: " << credits  << endl << " GPA: " << gpa << endl;
 		}
 		virtual float tuition() = 0;
 
@@ -114,13 +115,13 @@ class Mtsmithe_Undergrad : public Student {
 		}
 
 		void print() {
-			cout << endl;
 			Student::print();
-			cout << " Year: " << *year << " Tuition: $" << tuition();
+			cout << " Year: " << *year << endl << " Tuition: $" << tuition() << endl;
 		}
-		/*float get_tuition() {
-			return tuition;
-		}*/
+		static bool sortByGPA(Mtsmithe_Undergrad const & a, Mtsmithe_Undergrad const & b) {
+			return a.gpa < b.gpa;
+
+		}
 		
 
 };
@@ -161,7 +162,8 @@ class Grad : public Student {
 		void print() {
 			cout << endl;
 			Student::print();
-			cout << " Title: graduate " << *title << " Tutition: $" << tuition() << " Thesis: " << *thesis;
+			cout << " Title: graduate " << *title  <<endl << " Tuition: $" << tuition()  
+				<< endl << " Thesis: " << *thesis << endl;
 		}
 		
 
@@ -212,12 +214,12 @@ class GradAsst : public Grad {
 
 		void print() {
 			Grad::print();
-			cout << " Pay: $"<<  hourPay << " Supervisor: " << supervisor << " Task: " << task << endl;
+			cout << " Pay: $"<<  hourPay << endl << " Supervisor: " << supervisor 
+				<< endl << " Task: " << task << endl;
 		}
 };
 
 class utilityPack {
-
 
 public:
 	utilityPack(int i) {};
@@ -226,11 +228,11 @@ public:
 		string call;
 		switch (b) {
 			case 's':
-				call = "static";
+				call = "Static";
 				break;
 
 			case 'd':
-				call = "dynamic";
+				call = "Dynamic";
 				break;
 			}
 
@@ -241,10 +243,15 @@ public:
 				cout << "\n " << call << " call of tuition() in " << in << ": $";
 			}
 	}
+
 	vector<string> get_tokens(string in) {
 		istringstream iss(in);
 		vector<string> tokens{ istream_iterator<string>{iss}, istream_iterator<string>{} };
 		return tokens;
+	}
+
+	void linebreak() {
+		cout << endl << endl;
 	}
 
 
@@ -301,7 +308,7 @@ public:
 		ifstream file("student.txt");
 		string line;
 		list<Mtsmithe_Undergrad> student_list;
-		vector<Mtsmithe_Undergrad*> students;
+		vector<Mtsmithe_Undergrad> student_vector;
 
 		while (getline(file, line)) {
 			vector <string> e = util.get_tokens(line);
@@ -323,11 +330,19 @@ public:
 		student_list.push_front(student_list.back());
 		student_list.pop_back();
 
-		cout << endl << endl;
+		util.linebreak();
+
 		list <Mtsmithe_Undergrad> ::iterator it;
 		
+		cout << "Students printed from list data structure after moving last student to front:";
+		
+		util.linebreak();
+
 		student.display_Head();
 		for (auto it = student_list.begin(); it != student_list.end(); it++ ) {
+
+			student_vector.push_back( *it);
+
 			std::cout.width(20); cout << std::left << it->get_name();
 			std::cout.width(10); cout << std::left << it->get_ssn();
 			cout << std::setw(10) << left << it->get_year(); 
@@ -336,8 +351,18 @@ public:
 			std::cout.fill(' '); cout << setw(10) << right << setprecision(2) << it->get_gpa() 
 				<< setprecision(0) <<endl;
 		}
+
+		typedef bool(*mts_UdgrdGPACompFunc)(Mtsmithe_Undergrad const&, Mtsmithe_Undergrad const&);
 		
-		
+		sort(begin(student_vector), end(student_vector), static_cast<mts_UdgrdGPACompFunc>(&Mtsmithe_Undergrad::sortByGPA));
+
+		cout << endl << "Students by GPA in ascending order (if A's GPA < B's GPA then A is printed first): " << endl;
+
+		for (auto  e : student_vector) {
+			e.print();
+		}
+
+		util.linebreak();
 
 		return 0;
 	}
