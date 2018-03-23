@@ -25,32 +25,30 @@ print to console, and implements STL sort function (overloading "<" operator)
 
 using namespace std;
 
+//define abstract base class student
 class Student {
-
+//declare student data members
 	protected: 
 		char name[21];
 		char ssn[10];
 		float gpa;
 		int credits;
-
+//define public functions of student
 	public:
+		//constructor
 		Student(const char parName[], const char parSsn[], float gpa, int credits) 
 			: gpa(gpa), credits(credits) {
-			/*
-			cout << "Enter student name" << endl;
-			std::cin.getline(name, sizeof name);
-			cout << "Enter student social security number" << endl;
-			std::cin.getline(ssn, sizeof ssn);
-			*/
+			//there has to be a better way to handle character array data
 			strcpy_s(name, sizeof name, parName);
 			strcpy_s(ssn, sizeof ssn, parSsn);
 
 		};
-
+		//abstract function to be overloaded in derived classes so BCL pointers can use derived class version
 		virtual void print() {
 			
 			cout << endl << " Name: " << name << endl << " SSN: " << ssn  << endl << " Credits: " << credits  << endl << " GPA: " << gpa << endl;
 		}
+		//pure abstract function (making Student class abstract and uninstantiable)
 		virtual float tuition() = 0;
 
 		void set_GPA(float gpa) {
@@ -60,6 +58,7 @@ class Student {
 		void set_Credits(int credits) {
 			this-> credits = credits;
 		}
+		//header for table of student data to be used later
 		void display_Head() {
 			std::cout.width(20); cout << std::left << "Name:";
 			cout << std::setw(10) << std::left << "SSN:";
@@ -83,17 +82,18 @@ class Student {
 		}
 
 };
-
+//define Mtsmithe_Undergrad as a derived class of student
 class Mtsmithe_Undergrad : public Student {
-
+	//data members
 	protected:
 		float undergrad_rate = 380.0;
 		char yearArray[10];
 		char (*year)[10] = &yearArray;
 		
 		
-
+	//public functionos
 	public:
+		//constructor (calls BCL constructor)
 		Mtsmithe_Undergrad(const char name[21], const char ssn[10],
 			float gpa, int credits, char parYear[]) : Student(name, ssn, gpa, credits) {
 			tuition();
@@ -108,16 +108,17 @@ class Mtsmithe_Undergrad : public Student {
 		float get_rate() {
 			return undergrad_rate;
 		}
-
+		//overriding pure virtual function (must be done)
 		float tuition() {
 			float tuition = undergrad_rate * credits;
 			return tuition;
 		}
-
+		//overriding abstract function of student
 		void print() {
 			Student::print();
 			cout << " Year: " << *year << endl << " Tuition: $" << tuition() << endl;
 		}
+		//function to use when overloading STL less than '<' operator
 		static bool sortByGPA(Mtsmithe_Undergrad const & a, Mtsmithe_Undergrad const & b) {
 			return a.gpa < b.gpa;
 
@@ -125,7 +126,7 @@ class Mtsmithe_Undergrad : public Student {
 		
 
 };
-
+//define Grad class as derived from student class
 class Grad : public Student {
 	protected:
 		float grad_rate = 500.0;
@@ -136,9 +137,10 @@ class Grad : public Student {
 		char(*title)[13] = &titleArr;
 
 	public:
+		//constructor
 		Grad(const char name[21], const char ssn[10], float gpa, int credits,
 			char parThesis[], char parTitle[]) : Student(name, ssn, gpa, credits) {
-
+			//calls tuition which creates and sets tuiton variable 
 			tuition();
 			strcpy_s(*thesis, sizeof thesisArray, parThesis);
 			strcpy_s(*title, sizeof titleArr, parTitle);
@@ -148,7 +150,7 @@ class Grad : public Student {
 		float get_rate() {
 			return grad_rate;
 		}
-
+		//overriding abstract function in base class
 		float tuition() {
 			float tuition = grad_rate * credits;
 			return tuition;
@@ -159,8 +161,10 @@ class Grad : public Student {
 		void set_thesis(char * newPointer) {
 			thesisPtr = newPointer;
 		}
+		//overriding abstract print function
 		void print() {
 			cout << endl;
+			//calls student print function
 			Student::print();
 			cout << " Title: graduate " << *title  <<endl << " Tuition: $" << tuition()  
 				<< endl << " Thesis: " << *thesis << endl;
