@@ -29,6 +29,7 @@ class Student {
 		char ssn[10];
 		float gpa;
 		int credits;
+		
 //define public functions of student
 	public:
 		//constructor
@@ -85,7 +86,7 @@ class Mtsmithe_Undergrad : public Student {
 		float undergrad_rate = 380.0;
 		//allocate space for a char array 
 		char yearArray[10];
-		//create a pointer and point it at the front of the char array
+		//create a pointer and point it to the address at the front of the char array
 		char (*year)[10] = &yearArray;
 		
 		
@@ -94,11 +95,11 @@ class Mtsmithe_Undergrad : public Student {
 		//constructor (calls BCL constructor)
 		Mtsmithe_Undergrad(const char name[21], const char ssn[10],
 			float gpa, int credits, char parYear[]) : Student(name, ssn, gpa, credits) {
-			strcpy_s(*year, parYear);
+			strcpy_s(*year, sizeof yearArray, parYear);
 
 		};
 
-		char * get_year() {
+		char  * get_year() {
 			return *year;
 		}
 
@@ -346,10 +347,11 @@ public:
 			strcpy_s(year, e[2].c_str());
 			cred = atoi(e[3].c_str());
 			gpa = atof(e[4].c_str());
-			//instantiate an *_Undergrad object with those variables and put them in
+			//instantiate *_Undergrad objects with those variables and put them in
 			//the list object we declared earlier
-			student_list.push_back(Mtsmithe_Undergrad(name, ssn, gpa, cred, year));
-		}
+			student_list.push_back( *( new Mtsmithe_Undergrad(name, ssn, gpa, cred, year)));
+		}	
+
 		//get a copy of the _Undergrad object at the end of the list and insert it at the front
 		student_list.push_front(student_list.back());
 		//delete the object in the back of the list that we just copied to the front  

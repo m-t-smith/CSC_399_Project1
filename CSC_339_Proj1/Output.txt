@@ -1,0 +1,113 @@
+Matt Smitherman
+339-01
+3/24/2018
+
+Project 1 Output:
+ 
+Static call of print() in _undergrad:
+ Name: Mary
+ SSN: 000111222
+ Credits: 12
+ GPA: 4
+ Year: Junior
+ Tuition: $4560
+
+ Static call of tuition() in _undergrad: $4560
+
+ Dynamic call of print() in _undergrad:
+ Name: Mary
+ SSN: 000111222
+ Credits: 12
+ GPA: 4
+ Year: Junior
+ Tuition: $4560
+
+ Dynamic call of tuition() in _undergrad: $4560
+
+ Static call of print() in Grad:
+
+ Name: David
+ SSN: 111222333
+ Credits: 9
+ GPA: 3.7
+ Title: graduate student
+ Tuition: $4500
+ Thesis: How to learn data structures using C++/STL
+
+ Static call of tuition() in Grad: $4500
+
+ Dynamic call of print() in Grad:
+
+ Name: David
+ SSN: 111222333
+ Credits: 9
+ GPA: 3.7
+ Title: graduate student
+ Tuition: $4500
+ Thesis: How to learn data structures using C++/STL
+
+ Dynamic call of tuition() in Grad: $4500
+
+ Static call of print() in GradAsst:
+
+ Name: Jason
+ SSN: 222333444
+ Credits: 9
+ GPA: 3.9
+ Title: graduate assistant
+ Tuition: $4500
+ Thesis: Design of efficient algorithms
+ Pay: $20
+ Supervisor: Dr. Fu
+ Task: Grading 330 projects and implementing a data mining algorithm
+
+ Static call of tuition() in GradAsst: $4500
+
+ Dynamic call of print() in GradAsst:
+
+ Name: Jason
+ SSN: 222333444
+ Credits: 9
+ GPA: 3.9
+ Title: graduate assistant
+ Tuition: $4500
+ Thesis: Design of efficient algorithms
+ Pay: $20
+ Supervisor: Dr. Fu
+ Task: Grading 330 projects and implementing a data mining algorithm
+
+ Dynamic call of tuition() in GradAsst: $4500
+
+
+Students printed from list data structure after moving last student to front:
+
+Name:               SSN:      Year:     Credits:    Tuition:      GPA:
+Louise              888777666 Freshman  9         $$$$$$3420       3.6
+Mary                000111222 Junior    12        $$$$$$4560         4
+Bob                 999888777 Sophmore  15        $$$$$$5700       2.7
+
+Students printed from vector in ascending order of GPA (if A's GPA < B's GPA then A is printed first):
+
+ Name: Bob
+ SSN: 999888777
+ Credits: 15
+ GPA: 2.7
+ Year: Sophmore
+ Tuition: $5700
+
+ Name: Louise
+ SSN: 888777666
+ Credits: 9
+ GPA: 3.6
+ Year: Freshman
+ Tuition: $3420
+
+ Name: Mary
+ SSN: 000111222
+ Credits: 12
+ GPA: 4
+ Year: Junior
+ Tuition: $4560
+
+
+Press any key to continue . . .
